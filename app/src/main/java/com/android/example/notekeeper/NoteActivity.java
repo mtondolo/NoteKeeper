@@ -1,23 +1,23 @@
 package com.android.example.notekeeper;
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.view.View;
+import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 import java.util.List;
 
 public class NoteActivity extends AppCompatActivity {
     public static final String NOTE_INFO = "com.android.example.notekeeper.NOTE_INFO";
+    private NoteInfo mNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +31,29 @@ public class NoteActivity extends AppCompatActivity {
                 new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, courses);
         courseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        Spinner courseSpinner = findViewById(R.id.spinner_courses);
-        courseSpinner.setAdapter(courseAdapter);
+        Spinner spinnerCourses = findViewById(R.id.spinner_courses);
+        spinnerCourses.setAdapter(courseAdapter);
 
+        readDisplayStateValue();
+
+        EditText textNoteTitle = findViewById(R.id.text_note_title);
+        EditText textNoteText = findViewById(R.id.text_note_text);
+
+        displayNote(spinnerCourses, textNoteTitle, textNoteText);
+
+    }
+
+    private void displayNote(Spinner spinnerCourses, EditText textNoteTitle, EditText textNoteText) {
+        List<CourseInfo> courses = DataManager.getInstance().getCourses();
+        int courseIndex = courses.indexOf(courses);
+        spinnerCourses.setSelection(courseIndex);
+        textNoteTitle.setText(mNote.getTitle());
+        textNoteText.setText(mNote.getText());
+    }
+
+    private void readDisplayStateValue() {
+        Intent intent = getIntent();
+        mNote = intent.getParcelableExtra(NOTE_INFO);
     }
 
     @Override
