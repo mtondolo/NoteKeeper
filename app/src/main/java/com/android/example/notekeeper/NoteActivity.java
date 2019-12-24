@@ -22,6 +22,9 @@ public class NoteActivity extends AppCompatActivity {
     private Spinner mSpinnerCourses;
     private EditText mTextNoteTitle;
     private EditText mTextNoteText;
+    private boolean mIsCancelling;
+    private int position;
+    private int mNotePosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +53,14 @@ public class NoteActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        saveNote();
         super.onPause();
+        if (mIsCancelling) {
+            if (mIsNewNote) {
+                DataManager.getInstance().removeNote(mNotePosition);
+            }
+        } else {
+            saveNote();
+        }
     }
 
     private void saveNote() {
@@ -70,10 +79,20 @@ public class NoteActivity extends AppCompatActivity {
 
     private void readDisplayStateValue() {
         Intent intent = getIntent();
-        int position = intent.getIntExtra(NOTE_POSITION, POSITION_NOT_SET);
+        position = intent.getIntExtra(NOTE_POSITION, POSITION_NOT_SET);
+        final int position = this.position;
         mIsNewNote = position == POSITION_NOT_SET;
-        if(!mIsNewNote)
-            mNote = DataManager.getInstance().getNotes().get(position);
+        if (mIsNewNote) {
+            createNewNote();
+        } else {
+            mNote = DataManager.getInstance().getNotes().get(this.position);
+        }
+    }
+
+    private void createNewNote() {
+        DataManager dm = DataManager.getInstance();
+        mNotePosition = dm.createNewNote();
+        mNote = dm.getNotes().get(mNotePosition);
     }
 
     @Override
@@ -94,6 +113,9 @@ public class NoteActivity extends AppCompatActivity {
         if (id == R.id.action_send_mail) {
             sendEmail();
             return true;
+        } else if (id == R.id.action_cancel) {
+            mIsCancelling = true;
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
