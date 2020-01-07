@@ -4,17 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
-import android.view.MenuItem;
 import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -31,9 +24,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private DrawerLayout mDrawerLayout;
-    private ActionBarDrawerToggle mActionBarDrawerToggle;
-    private NavigationView mNavigationView;
     private NoteRecyclerAdapter mNoteRecyclerAdapter;
 
     @Override
@@ -50,12 +40,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mDrawerLayout = findViewById(R.id.drawer_layout);
-        mActionBarDrawerToggle = new ActionBarDrawerToggle
-                (this, mDrawerLayout, toolbar, R.string.Open, R.string.Close);
-        mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
-        mActionBarDrawerToggle.syncState();
-        mNavigationView = findViewById(R.id.nav_view);
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle
+                (this, drawerLayout, toolbar, R.string.Open_navigation_drawer, R.string.Close_navigation_drawer);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
 
         initializeDisplayContent();
     }
